@@ -5,6 +5,7 @@ fn main() {
     println!("P3\n{0} {1}\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for j in 0..IMAGE_HEIGHT {
+        eprint!("\rScanlines remaining: {}\n", (IMAGE_HEIGHT - j));
         for i in 0..IMAGE_WIDTH {
             let r: f64 = (i as f64) / ((IMAGE_WIDTH as f64) - 1.0);
             let g: f64 = (j as f64) / ((IMAGE_HEIGHT as f64) - 1.0);
@@ -17,4 +18,5 @@ fn main() {
             println!("{0} {1} {2}", ir, ig, ib);
         }
     }
+    eprintln!("\rDone.");
 }
