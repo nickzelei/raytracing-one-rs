@@ -6,6 +6,8 @@ use std::ops::Sub;
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3(f64, f64, f64);
 
+pub type Point3 = Vec3;
+
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vec3(x, y, z)
