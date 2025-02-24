@@ -49,6 +49,7 @@ fn main() {
 }
 
 fn ray_color(r: ray::Ray) -> color::Color {
-    _ = r;
-    return color::Color::new(0.0, 0.0, 0.0);
+    let unit_direction = vec3::unit_vector(r.direction());
+    let a = (unit_direction.y() + 1.0) * 0.5;
+    return (color::Color::new(1.0, 1.0, 1.0) * (1.0 - a)) + (color::Color::new(0.5, 0.7, 1.0) * a);
 }

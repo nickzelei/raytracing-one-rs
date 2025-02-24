@@ -65,7 +65,7 @@ impl Add for Vec3 {
 impl Sub for Vec3 {
     type Output = Vec3;
     fn sub(self, rhs: Self) -> Self::Output {
-        Vec3(self.0 - rhs.0, self.1 - rhs.0, self.2 - rhs.2)
+        Vec3(self.0 - rhs.0, self.1 - rhs.1, self.2 - rhs.2)
     }
 }
 
