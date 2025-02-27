@@ -1,5 +1,6 @@
 use crate::{ray, vec3};
 
+#[derive(Debug, Default)]
 pub struct HitRecord {
     p: vec3::Point3,
     normal: vec3::Vec3,
@@ -15,6 +16,10 @@ impl HitRecord {
             t,
             front_face,
         }
+    }
+
+    pub fn t(&self) -> f64 {
+        self.t
     }
 
     pub fn set_face_normal(&mut self, r: ray::Ray, outward_normal: vec3::Vec3) {

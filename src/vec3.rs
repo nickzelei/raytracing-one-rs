@@ -4,7 +4,7 @@ use std::ops::Mul;
 use std::ops::Neg;
 use std::ops::Sub;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Vec3(f64, f64, f64);
 
 pub type Point3 = Vec3;
