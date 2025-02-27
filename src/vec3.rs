@@ -4,6 +4,12 @@ use std::ops::Mul;
 use std::ops::Neg;
 use std::ops::Sub;
 
+pub const PI: f64 = 3.1415926535897932385;
+
+pub fn degrees_to_radiants(degrees: f64) -> f64 {
+    return degrees * PI / 180.0;
+}
+
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Vec3(f64, f64, f64);
 

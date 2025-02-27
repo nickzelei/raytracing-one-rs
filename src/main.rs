@@ -1,3 +1,5 @@
+use core::f64;
+
 mod color;
 mod hittable;
 mod hittable_list;
@@ -6,6 +8,7 @@ mod sphere;
 mod vec3;
 
 fn main() {
+    // Image
     let aspect_ratio = 16.0 / 9.0;
     const IMAGE_WIDTH: i64 = 400;
     // Calc the image height, ensure it's at least 1
@@ -13,6 +16,17 @@ fn main() {
     if image_height < 1 {
         image_height = 1;
     }
+
+    // World
+    let mut world = hittable_list::HittableList::new();
+    world.add(Box::new(sphere::Sphere::new(
+        vec3::Point3::new(0.0, 0.0, -1.0),
+        0.5,
+    )));
+    world.add(Box::new(sphere::Sphere::new(
+        vec3::Point3::new(0.0, -100.5, -1.0),
+        100.0,
+    )));
 
     // Camera
     let focal_length = 1.0;
@@ -44,33 +58,20 @@ fn main() {
             let ray_direction = pixel_center - camera_center;
 
             let r = ray::Ray::new(camera_center, ray_direction);
-            let pixel_color = ray_color(r);
+            let pixel_color = ray_color(r, &world);
             color::write_color(pixel_color);
         }
     }
     eprintln!("\rDone.");
 }
 
-fn ray_color(r: ray::Ray) -> color::Color {
-    let t = hit_sphere(vec3::Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let n = vec3::unit_vector(r.at(t) - vec3::Vec3::new(0.0, 0.0, -1.0));
-        return color::Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0) * 0.5;
+fn ray_color(r: ray::Ray, world: &dyn hittable::Hittable) -> color::Color {
+    let mut rec = hittable::HitRecord::default();
+    if world.hit(r, 0.0, f64::INFINITY, &mut rec) {
+        return (rec.normal() + color::Color::new(1.0, 1.0, 1.0)) * 0.5;
     }
+
     let unit_direction = vec3::unit_vector(r.direction());
     let a = (unit_direction.y() + 1.0) * 0.5;
     return (color::Color::new(1.0, 1.0, 1.0) * (1.0 - a)) + (color::Color::new(0.5, 0.7, 1.0) * a);
-}
-
-fn hit_sphere(center: vec3::Point3, radius: f64, r: ray::Ray) -> f64 {
-    let oc = center - r.origin();
-    let a = r.direction().length_squared();
-    let h = vec3::dot(r.direction(), oc);
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = h * h - a * c;
-
-    if discriminant < 0.0 {
-        return -1.0;
-    }
-    return (h - discriminant.sqrt()) / a;
 }
