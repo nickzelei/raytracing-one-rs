@@ -1,4 +1,4 @@
-use crate::vec3;
+use crate::{interval, vec3};
 
 pub type Color = vec3::Vec3;
 
@@ -8,9 +8,10 @@ pub fn write_color(pixel_color: Color) {
     let b: f64 = pixel_color.z();
 
     // Translates the [0,1] component values to byte range [0,255]
-    let rbyte: i64 = (255.999 * r) as i64;
-    let gbyte: i64 = (255.999 * g) as i64;
-    let bbyte: i64 = (255.999 * b) as i64;
+    let intensity = interval::Interval::new(0.000, 0.999);
+    let rbyte: i64 = (256.0 * intensity.clamp(r)) as i64;
+    let gbyte: i64 = (256.0 * intensity.clamp(g)) as i64;
+    let bbyte: i64 = (256.0 * intensity.clamp(b)) as i64;
 
     println!("{0} {1} {2}", rbyte, gbyte, bbyte);
 }
