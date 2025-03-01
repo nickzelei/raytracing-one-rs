@@ -100,7 +100,7 @@ fn ray_color(r: ray::Ray, depth: i64, world: &dyn hittable::Hittable) -> color::
     }
 
     let mut rec = hittable::HitRecord::default();
-    if world.hit(r, interval::Interval::new(0.0, f64::INFINITY), &mut rec) {
+    if world.hit(r, interval::Interval::new(0.001, f64::INFINITY), &mut rec) {
         let direction = vec3::random_on_hemisphere(rec.normal());
         return 0.5 * ray_color(ray::Ray::new(rec.p(), direction), depth - 1, world);
     }
