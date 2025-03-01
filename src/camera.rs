@@ -11,10 +11,16 @@ pub struct Camera {
     pixel_delta_v: vec3::Vec3, // Offset to pixel below
     samples_per_pixel: i64,    // Count of random samples for each pixel
     pixel_samples_scale: f64,  // Color scale factor for a sum of pixel samples
+    max_depth: i64,            // max number of ray bounces into scene
 }
 
 impl Camera {
-    pub fn new(aspect_ratio: f64, image_width: i64, samples_per_pixel: i64) -> Self {
+    pub fn new(
+        aspect_ratio: f64,
+        image_width: i64,
+        samples_per_pixel: i64,
+        max_depth: i64,
+    ) -> Self {
         let image_height = calculate_image_height(image_width, aspect_ratio);
         let center = vec3::Point3::new(0.0, 0.0, 0.0);
         let focal_length = 1.0;
@@ -44,6 +50,7 @@ impl Camera {
             pixel00_loc,
             samples_per_pixel,
             pixel_samples_scale,
+            max_depth,
         }
     }
 
@@ -56,7 +63,7 @@ impl Camera {
                 let mut pixel_color = color::Color::new(0.0, 0.0, 0.0);
                 for _ in 0..self.samples_per_pixel {
                     let r = self.get_ray(i, j);
-                    pixel_color += ray_color(r, world);
+                    pixel_color += ray_color(r, self.max_depth, world);
                 }
                 color::write_color(self.pixel_samples_scale * pixel_color);
             }
@@ -86,11 +93,16 @@ fn sample_square() -> vec3::Vec3 {
     )
 }
 
-fn ray_color(r: ray::Ray, world: &dyn hittable::Hittable) -> color::Color {
+fn ray_color(r: ray::Ray, depth: i64, world: &dyn hittable::Hittable) -> color::Color {
+    // if we've exceeded the limit, no more light is gathered
+    if depth <= 0 {
+        return color::Color::new(0.0, 0.0, 0.0);
+    }
+
     let mut rec = hittable::HitRecord::default();
     if world.hit(r, interval::Interval::new(0.0, f64::INFINITY), &mut rec) {
         let direction = vec3::random_on_hemisphere(rec.normal());
-        return 0.5 * ray_color(ray::Ray::new(rec.p(), direction), world);
+        return 0.5 * ray_color(ray::Ray::new(rec.p(), direction), depth - 1, world);
     }
 
     let unit_direction = vec3::unit_vector(r.direction());
