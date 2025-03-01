@@ -18,6 +18,10 @@ impl HitRecord {
         }
     }
 
+    pub fn p(&self) -> vec3::Point3 {
+        self.p
+    }
+
     pub fn t(&self) -> f64 {
         self.t
     }

@@ -5,6 +5,8 @@ use std::ops::Mul;
 use std::ops::Neg;
 use std::ops::Sub;
 
+use crate::utils;
+
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Vec3(f64, f64, f64);
 
@@ -13,6 +15,22 @@ pub type Point3 = Vec3;
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vec3(x, y, z)
+    }
+
+    pub fn new_random() -> Self {
+        Vec3(
+            utils::random_double(),
+            utils::random_double(),
+            utils::random_double(),
+        )
+    }
+
+    pub fn new_random_bounded(min: f64, max: f64) -> Self {
+        Vec3(
+            utils::random_double_bounded(min, max),
+            utils::random_double_bounded(min, max),
+            utils::random_double_bounded(min, max),
+        )
     }
 
     pub fn x(&self) -> f64 {
@@ -107,4 +125,23 @@ pub fn dot(u: Vec3, v: Vec3) -> f64 {
 
 pub fn unit_vector(v: Vec3) -> Vec3 {
     return v / v.length();
+}
+
+pub fn random_unit_vector() -> Vec3 {
+    loop {
+        let p = Vec3::new_random_bounded(-1.0, 1.0);
+        let lensq = p.length_squared();
+        if 1e-160 < lensq && lensq <= 1.0 {
+            return p / lensq.sqrt();
+        }
+    }
+}
+
+pub fn random_on_hemisphere(normal: Vec3) -> Vec3 {
+    let on_unit_sphere = random_unit_vector();
+    if dot(on_unit_sphere, normal) > 0.0 {
+        // in the same hemisphere as the normal
+        return on_unit_sphere;
+    }
+    return -on_unit_sphere;
 }

@@ -89,12 +89,13 @@ fn sample_square() -> vec3::Vec3 {
 fn ray_color(r: ray::Ray, world: &dyn hittable::Hittable) -> color::Color {
     let mut rec = hittable::HitRecord::default();
     if world.hit(r, interval::Interval::new(0.0, f64::INFINITY), &mut rec) {
-        return (rec.normal() + color::Color::new(1.0, 1.0, 1.0)) * 0.5;
+        let direction = vec3::random_on_hemisphere(rec.normal());
+        return 0.5 * ray_color(ray::Ray::new(rec.p(), direction), world);
     }
 
     let unit_direction = vec3::unit_vector(r.direction());
-    let a = (unit_direction.y() + 1.0) * 0.5;
-    return (color::Color::new(1.0, 1.0, 1.0) * (1.0 - a)) + (color::Color::new(0.5, 0.7, 1.0) * a);
+    let a = 0.5 * (unit_direction.y() + 1.0);
+    return ((1.0 - a) * color::Color::new(1.0, 1.0, 1.0)) + (a * color::Color::new(0.5, 0.7, 1.0));
 }
 
 fn calculate_image_height(image_width: i64, aspect_ratio: f64) -> i64 {
