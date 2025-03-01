@@ -9,21 +9,29 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-    pub fn new(p: vec3::Point3, normal: vec3::Vec3, t: f64, front_face: bool) -> Self {
-        Self {
-            p,
-            normal,
-            t,
-            front_face,
-        }
-    }
+    // pub fn new(p: vec3::Point3, normal: vec3::Vec3, t: f64, front_face: bool) -> Self {
+    //     Self {
+    //         p,
+    //         normal,
+    //         t,
+    //         front_face,
+    //     }
+    // }
 
     pub fn p(&self) -> vec3::Point3 {
         self.p
     }
 
+    pub fn set_p(&mut self, input: vec3::Point3) {
+        self.p = input;
+    }
+
     pub fn t(&self) -> f64 {
         self.t
+    }
+
+    pub fn set_t(&mut self, input: f64) {
+        self.t = input
     }
 
     pub fn normal(&self) -> vec3::Vec3 {

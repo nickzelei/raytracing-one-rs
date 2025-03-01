@@ -1,4 +1,7 @@
-use crate::{color, hittable, interval, ray, utils, vec3};
+use crate::{
+    color, hittable, interval, ray, utils,
+    vec3::{self, random_unit_vector},
+};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Camera {
@@ -101,7 +104,7 @@ fn ray_color(r: ray::Ray, depth: i64, world: &dyn hittable::Hittable) -> color::
 
     let mut rec = hittable::HitRecord::default();
     if world.hit(r, interval::Interval::new(0.001, f64::INFINITY), &mut rec) {
-        let direction = vec3::random_on_hemisphere(rec.normal());
+        let direction = rec.normal() + random_unit_vector();
         return 0.5 * ray_color(ray::Ray::new(rec.p(), direction), depth - 1, world);
     }
 

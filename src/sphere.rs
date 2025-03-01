@@ -37,10 +37,9 @@ impl hittable::Hittable for Sphere {
             }
         }
 
-        let t = root;
-        let p = r.at(t);
-        // let normal = (p - self.center) / self.radius;
-        let outward_normal = (p - self.center) / self.radius;
+        rec.set_t(root);
+        rec.set_p(r.at(rec.t()));
+        let outward_normal = (rec.p() - self.center) / self.radius;
         rec.set_face_normal(r, outward_normal);
 
         true

@@ -1,5 +1,3 @@
-use rand::Rng;
-
 pub const PI: f64 = 3.1415926535897932385;
 
 pub fn degrees_to_radiants(degrees: f64) -> f64 {
