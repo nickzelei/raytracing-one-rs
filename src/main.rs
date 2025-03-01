@@ -3,6 +3,7 @@ use core::f64;
 mod color;
 mod hittable;
 mod hittable_list;
+mod interval;
 mod ray;
 mod sphere;
 mod vec3;
@@ -67,7 +68,7 @@ fn main() {
 
 fn ray_color(r: ray::Ray, world: &dyn hittable::Hittable) -> color::Color {
     let mut rec = hittable::HitRecord::default();
-    if world.hit(r, 0.0, f64::INFINITY, &mut rec) {
+    if world.hit(r, interval::Interval::new(0.0, f64::INFINITY), &mut rec) {
         return (rec.normal() + color::Color::new(1.0, 1.0, 1.0)) * 0.5;
     }
 
