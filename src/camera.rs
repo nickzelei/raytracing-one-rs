@@ -1,7 +1,4 @@
-use crate::{
-    color, hittable, interval, ray, utils,
-    vec3::{self, random_unit_vector},
-};
+use crate::{color, hittable, interval, ray, utils, vec3};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Camera {
@@ -123,7 +120,8 @@ fn ray_color(r: ray::Ray, depth: i64, world: &dyn hittable::Hittable) -> color::
 fn calculate_image_height(image_width: i64, aspect_ratio: f64) -> i64 {
     let height = ((image_width as f64) / aspect_ratio) as i64;
     if height < 1 {
-        return 1;
+        1
+    } else {
+        height
     }
-    height
 }

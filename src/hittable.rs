@@ -39,6 +39,10 @@ impl HitRecord {
         self.mat = input
     }
 
+    pub fn front_face(&self) -> bool {
+        self.front_face
+    }
+
     pub fn set_face_normal(&mut self, r: ray::Ray, outward_normal: vec3::Vec3) {
         // Sets the hit record normal vector.
         // NOTE: the outward_normal is assumed to have unit length.
