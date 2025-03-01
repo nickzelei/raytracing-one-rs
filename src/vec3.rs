@@ -52,6 +52,12 @@ impl Vec3 {
     pub fn length_squared(&self) -> f64 {
         return self.0 * self.0 + self.1 * self.1 + self.2 * self.2;
     }
+
+    pub fn near_zero(&self) -> bool {
+        // return true if the vector is closer to zero in all dimensions.
+        let s = 1e-8;
+        (self.0.abs() < s) && (self.1.abs() < s) && (self.2.abs() < s)
+    }
 }
 
 impl Mul for Vec3 {
@@ -144,4 +150,8 @@ pub fn random_on_hemisphere(normal: Vec3) -> Vec3 {
         return on_unit_sphere;
     }
     return -on_unit_sphere;
+}
+
+pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+    return v - 2.0 * dot(v, n) * n;
 }

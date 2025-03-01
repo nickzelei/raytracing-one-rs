@@ -1,23 +1,16 @@
-use crate::{interval, ray, vec3};
+use std::rc::Rc;
 
-#[derive(Debug, Default)]
+use crate::{interval, material, ray, vec3};
+
 pub struct HitRecord {
     p: vec3::Point3,
     normal: vec3::Vec3,
+    mat: Rc<dyn material::Material>,
     t: f64,
     front_face: bool,
 }
 
 impl HitRecord {
-    // pub fn new(p: vec3::Point3, normal: vec3::Vec3, t: f64, front_face: bool) -> Self {
-    //     Self {
-    //         p,
-    //         normal,
-    //         t,
-    //         front_face,
-    //     }
-    // }
-
     pub fn p(&self) -> vec3::Point3 {
         self.p
     }
@@ -38,6 +31,14 @@ impl HitRecord {
         self.normal
     }
 
+    pub fn mat(&self) -> Rc<dyn material::Material> {
+        self.mat.clone()
+    }
+
+    pub fn set_mat(&mut self, input: Rc<dyn material::Material>) {
+        self.mat = input
+    }
+
     pub fn set_face_normal(&mut self, r: ray::Ray, outward_normal: vec3::Vec3) {
         // Sets the hit record normal vector.
         // NOTE: the outward_normal is assumed to have unit length.
@@ -46,6 +47,18 @@ impl HitRecord {
             self.normal = outward_normal;
         } else {
             self.normal = -outward_normal;
+        }
+    }
+}
+
+impl Default for HitRecord {
+    fn default() -> Self {
+        HitRecord {
+            p: vec3::Vec3::default(),
+            normal: vec3::Vec3::default(),
+            mat: Rc::new(material::Lambertian::default()),
+            t: 0.0,
+            front_face: false,
         }
     }
 }
