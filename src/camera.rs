@@ -12,6 +12,7 @@ pub struct Camera {
     samples_per_pixel: i64,    // Count of random samples for each pixel
     pixel_samples_scale: f64,  // Color scale factor for a sum of pixel samples
     max_depth: i64,            // max number of ray bounces into scene
+    vfov: f64,                 // vertical view angle (field of view)
 }
 
 impl Camera {
@@ -20,11 +21,14 @@ impl Camera {
         image_width: i64,
         samples_per_pixel: i64,
         max_depth: i64,
+        vfov: f64,
     ) -> Self {
         let image_height = calculate_image_height(image_width, aspect_ratio);
         let center = vec3::Point3::new(0.0, 0.0, 0.0);
         let focal_length = 1.0;
-        let viewport_height = 2.0;
+        let theta = utils::degrees_to_radians(vfov);
+        let h = (theta / 2.0).tan();
+        let viewport_height = 2.0 * h * focal_length;
         let viewport_width: f64 = viewport_height * ((image_width as f64) / (image_height as f64));
 
         // Calc the vectors across the horizontal and down the vertical viewport edges.
@@ -51,6 +55,7 @@ impl Camera {
             samples_per_pixel,
             pixel_samples_scale,
             max_depth,
+            vfov,
         }
     }
 
