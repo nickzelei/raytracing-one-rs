@@ -12,7 +12,6 @@ pub struct Camera {
     samples_per_pixel: i64,    // Count of random samples for each pixel
     pixel_samples_scale: f64,  // Color scale factor for a sum of pixel samples
     max_depth: i64,            // max number of ray bounces into scene
-    vfov: f64,                 // vertical view angle (field of view)
 }
 
 impl Camera {
@@ -22,25 +21,32 @@ impl Camera {
         samples_per_pixel: i64,
         max_depth: i64,
         vfov: f64,
+        lookfrom: vec3::Point3,
+        lookat: vec3::Point3,
+        vup: vec3::Vec3,
     ) -> Self {
         let image_height = calculate_image_height(image_width, aspect_ratio);
-        let center = vec3::Point3::new(0.0, 0.0, 0.0);
-        let focal_length = 1.0;
+        let center = lookfrom;
+        let focal_length = (lookfrom - lookat).length();
         let theta = utils::degrees_to_radians(vfov);
         let h = (theta / 2.0).tan();
         let viewport_height = 2.0 * h * focal_length;
         let viewport_width: f64 = viewport_height * ((image_width as f64) / (image_height as f64));
 
+        // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
+        let w = vec3::unit_vector(lookfrom - lookat);
+        let u = vec3::unit_vector(vec3::cross(vup, w));
+        let v = vec3::cross(w, u);
+
         // Calc the vectors across the horizontal and down the vertical viewport edges.
-        let viewport_u = vec3::Vec3::new(viewport_width, 0.0, 0.0);
-        let viewport_v = vec3::Vec3::new(0.0, -viewport_height, 0.0);
+        let viewport_u = viewport_width * u; // vector across viewport horizontal edge
+        let viewport_v = viewport_height * -v; // vector down viewport vertical edge
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
         let pixel_delta_u = viewport_u / (image_width as f64);
         let pixel_delta_v = viewport_v / (image_height as f64);
 
-        let viewport_upper_left =
-            center - vec3::Vec3::new(0.0, 0.0, focal_length) - viewport_u / 2.0 - viewport_v / 2.0;
+        let viewport_upper_left = center - (focal_length * w) - viewport_u / 2.0 - viewport_v / 2.0;
         let pixel00_loc = viewport_upper_left + (pixel_delta_u + pixel_delta_v) * 0.5;
 
         let pixel_samples_scale = 1.0 / (samples_per_pixel as f64);
@@ -55,7 +61,6 @@ impl Camera {
             samples_per_pixel,
             pixel_samples_scale,
             max_depth,
-            vfov,
         }
     }
 
