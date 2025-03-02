@@ -17,7 +17,9 @@ fn main() {
     const IMAGE_WIDTH: i64 = 400;
     const SAMPLES_PER_PIXEL: i64 = 100;
     const MAX_DEPTH: i64 = 50;
-    const VFOV: f64 = 90.0;
+    const VFOV: f64 = 20.0;
+    const DEFOCUS_ANGLE: f64 = 10.0; // Variantion angle of rays through each pixel
+    const FOCUS_DIST: f64 = 3.4; // Distance from camera lookfrom point to plane of perfect focus
 
     // World
     let mut world = hittable_list::HittableList::new();
@@ -67,6 +69,8 @@ fn main() {
         lookfrom,
         lookat,
         vup,
+        DEFOCUS_ANGLE,
+        FOCUS_DIST,
     );
     cam.render(&world);
 }
