@@ -1,4 +1,4 @@
-use crate::{color, hittable, ray, vec3};
+use crate::{color, hittable, ray, utils, vec3};
 
 pub trait Material {
     fn scatter(
@@ -81,6 +81,12 @@ impl Dielectric {
     pub fn new(refraction_index: f64) -> Self {
         Self { refraction_index }
     }
+
+    fn reflectance(&self, cosine: f64, refraction_index: f64) -> f64 {
+        let mut r0 = (1.0 - refraction_index) / (1.0 + self.refraction_index);
+        r0 = r0 * r0;
+        r0 + (1.0 - r0) * (1.0 - cosine).powi(5)
+    }
 }
 
 impl Material for Dielectric {
@@ -105,11 +111,12 @@ impl Material for Dielectric {
 
         let cannot_refract = ri * sin_theta > 1.0;
 
-        let direction = if cannot_refract {
-            vec3::reflect(unit_direction, rec.normal())
-        } else {
-            vec3::refract(unit_direction, rec.normal(), ri)
-        };
+        let direction =
+            if cannot_refract || self.reflectance(cos_theta, ri) > utils::random_double() {
+                vec3::reflect(unit_direction, rec.normal())
+            } else {
+                vec3::refract(unit_direction, rec.normal(), ri)
+            };
         *scattered = ray::Ray::new(rec.p(), direction);
         true
     }
