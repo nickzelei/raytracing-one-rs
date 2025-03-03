@@ -1,5 +1,5 @@
 [package]
-name = "raytracing-in-a-weekend"
+name = "raytracing-in-one-weekend"
 version = "0.1.0"
 edition = "2021"
 
