@@ -1,5 +1,5 @@
 [package]
-name = "raytracing-rust"
+name = "raytracing-in-a-weekend"
 version = "0.1.0"
 edition = "2021"
 
