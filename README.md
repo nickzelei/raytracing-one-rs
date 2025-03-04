@@ -11,3 +11,14 @@ The code in its current state will output the final scene.
 Note that this took ~10 hours on a M1 Pro Max.
 
 ![Final Scnee](./final-scene.webp)
+
+## Requirements
+
+- `rustc`
+- `cargo`
+
+## Running
+
+```shell
+cargo run > images/final-sceme.ppm
+```
