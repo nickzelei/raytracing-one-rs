@@ -20,5 +20,5 @@ Note that this took ~10 hours on a M1 Pro Max.
 ## Running
 
 ```shell
-cargo run > images/final-sceme.ppm
+cargo run > images/final-scene.ppm
 ```
